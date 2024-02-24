@@ -62,6 +62,7 @@ rm -rf ~/tmp
 ```
 ## Delft3D
 ```
+mkdir ~/local/delft3d/fm-68819
 mkdir ~/tmp
 cd ~/tmp
 svn checkout --username <username> --password <password> https://svn.oss.deltares.nl/repos/delft3d/tags/delft3dfm/68819/ delft3dfm-68819
@@ -71,10 +72,25 @@ svn checkout --username <username> --password <password> https://svn.oss.deltare
 cp delft3dfm-68819/src/third_party_open/swan/src/*.[fF]* delft3dfm-68819/src/third_party_open/swan/swan_mpi
 cp delft3dfm-68819/src/third_party_open/swan/src/*.[fF]* delft3dfm-68819/src/third_party_open/swan/swan_omp
 ```
+### Configure the build
 ```
 cd delft3dfm-68819/src
 export I_MPI_SHM="off"
-export FC=mpifort
+export FC=mpiifort
 export HDF5=${HOME}/local/hdf5/hdf5-1_10_7
-export Ne 2>&1 | tee a.txt
-./configure CC=mX=mpicpx MPICXX=mpicpx F77=mpiifort MPIF77=mpiifort FC=mpiifort MPIFC=mpiifort CPPFLAGS="-I${HDF5}/include" NETCDF_CFLAGS="-I${NDFC}/include -I${NDFF}/include" NETCDF_LIBS="-L${NDFC}/OME}/
+export NDFC=${HOME}/local/netcdf/netcdf-c-4.6.1
+export NDFF=${HOME}/local/netcdf/netcdf-f-4.5.0
+./autogen.sh --verbose 2>&1 | tee a.txt
+# configure the build
+ENV LD_LIBRARY_PATH=/opt/intel/oneapi/compiler/2022.2.0/linux/compiler/lib/intel64_lin:${LD_LIBRARY_PATH}
+RUN export LD_LIBRARY_PATH=/opt/intel/oneapi/compiler/2022.2.0/linux/compiler/lib/intel64_lin:${LD_LIBRARY_PATH} && \
+    source /opt/intel/oneapi/setvars.sh && ./autogen.sh && ./configure CC=icc CXX=icpc FC=ifort MPICXX=mpiicpc F77=ifort MPIF77=mpiifort MPIFC=mpiifort \
+    AM_FFLAGS='-lifcoremt' FFLAGS='-qopenmp -L/opt/intel/oneapi/compiler/2022.2.0/linux/compiler/lib/intel64_lin' AM_FCFLAGS='-lifcoremt -liomp5' \
+    FCFLAGS='-qopenmp -L/opt/intel/oneapi/compiler/2022.2.0/linux/compiler/lib/intel64_lin' AM_LDFLAGS='-lifcoremt -liomp5' \
+    CPPFLAGS="-I/usr/local/include  -qopenmp -L/opt/intel/oneapi/compiler/2022.2.0/linux/compiler/lib/intel64_lin -diag-disable=10441" \
+    CFLAGS="-m64 -diag-disable=10441 -qopenmp -L/opt/intel/oneapi/compiler/2022.2.0/linux/compiler/lib/intel64_lin" \
+    NETCDF_CFLAGS="-I/usr/local/include" NETCDF_LIBS="-L/usr/local/lib -lnetcdf" --prefix=/opt/delft3dfm
+# ./configure CC=mpiicx CXX=mpiicpx" MPICXX=mpiicpx F77=mpiifort MPIF77=mpiifort FC=mpiifort MPIFC=mpiifort CPPFLAGS="-I${HDF5}/include" NETCDF_CFLAGS="-I${NDFC}/include -I${NDFF}/include" NETCDF_LIBS="-L${NDFC}/lib -L${NDFF}/lib -lnetcdf" CFLAGS='-O2 ' CXXFLAGS='-O2 ' AM_FFLAGS='-lifcoremt ' FFLAGS='-O1 -qopenmp' AM_FCFLAGS='-lifcoremt ' FCFLAGS='-O1 -qopenmp' AM_LDFLAGS='-lifcoremt ' --prefix="${HOME}/local/delft3d/fm-68819/src" 2>&1 | tee c.txt
+# make ds-install 2>&1 | tee md.txt
+# make ds-install -C engines_gpl/dflowfm | tee mdfm.txt
+# cd ..
