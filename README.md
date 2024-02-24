@@ -1,5 +1,5 @@
 # How to install Delft3D in Debian 12
-These notes describe how to install Delft3D on my workstation mounting Debian 12.
+These notes describe how to install Delft3D on my workstation mounting Debian 12 - adapted from [here](https://gist.github.com/H0R5E/c4af6db788b227de702a12e01b64cf46).
 ## Pre-requisities
 ### 1) Dependencies from package manager
 ```
