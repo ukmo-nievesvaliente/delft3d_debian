@@ -60,3 +60,21 @@ make install
 cd ~
 rm -rf ~/tmp
 ```
+## Delft3D
+```
+mkdir ~/tmp
+cd ~/tmp
+svn checkout --username <username> --password <password> https://svn.oss.deltares.nl/repos/delft3d/tags/delft3dfm/68819/ delft3dfm-68819
+```
+#### Copy missing files: fix for known issue
+```
+cp delft3dfm-68819/src/third_party_open/swan/src/*.[fF]* delft3dfm-68819/src/third_party_open/swan/swan_mpi
+cp delft3dfm-68819/src/third_party_open/swan/src/*.[fF]* delft3dfm-68819/src/third_party_open/swan/swan_omp
+```
+```
+cd delft3dfm-68819/src
+export I_MPI_SHM="off"
+export FC=mpifort
+export HDF5=${HOME}/local/hdf5/hdf5-1_10_7
+export Ne 2>&1 | tee a.txt
+./configure CC=mX=mpicpx MPICXX=mpicpx F77=mpiifort MPIF77=mpiifort FC=mpiifort MPIFC=mpiifort CPPFLAGS="-I${HDF5}/include" NETCDF_CFLAGS="-I${NDFC}/include -I${NDFF}/include" NETCDF_LIBS="-L${NDFC}/OME}/
