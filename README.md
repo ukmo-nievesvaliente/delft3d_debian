@@ -100,8 +100,24 @@ Configure the build:
 ./configure CC=mpiicx CXX=mpiicpx MPICXX=mpiicpx F77=mpiifort MPIF77=mpiifort FC=mpiifort MPIFC=mpiifort AM_FFLAGS='-lifcoremt -liomp5' FFLAGS="-qopenmp -L${INTL}" AM_FCFLAGS='-lifcoremt -liomp5' FCFLAGS="-qopenmp -L${INTL}" AM_LDFLAGS='-lifcoremt -liomp5' CPPFLAGS="-I${HDF5}/include -qopenmp -L${INTL} -diag-disable=10441 -Wno-implicit-function-declaration -Wno-implicit-int" CFLAGS="-m64 -diag-disable=10441 -qopenmp -L${INTL} -Wno-implicit-function-declaration -Wno-implicit-int" NETCDF_CFLAGS="-I${NCDF}/include -qopenmp -L${INTL}" NETCDF_LIBS="-L${NCDF}/lib -lnetcdf -qopenmp -L${INTL}" --prefix="${HOME}/local/delft3d/4-142586"
 ```
 As explained [here](https://community.intel.com/t5/Intel-C-Compiler/Build-failure-with-with-newer-2022-2-compiler-in-pipeline/m-p/1419482), INTEL compilers are much stricter after version 2022.1 and some wanrings are now treated as errors. Indeed, older compilations of Delft3D (see e.g., [here](https://oss.deltares.nl/documents/portlet_file_entry/183920/log_v67888_compilation.txt/d71cf5ba-8515-6604-165c-983f79e29fad?download=true)) used to give warning for `-Wimplicit-function-declaration` and `-Wimplicit-int` while now we have errors. In order to avid this, the `-Wno-implicit-function-declaration` and `-Wno-implicit-int` compilation keys have been added in the configuration above. 
+
+#### Install
 ```
 make ds-install
 #make ds-install -C engines_gpl/dflowfm
 cd ..
+```
+#### Test the build
+```
+pushd examples/01_standard
+```
+Modify `run.sh` as follows:
+```
+#../../build_delft3d4/install/bin/run_dflow2d3d.sh
+~/local/delft3d/4-142586/bin/run_dflow2d3d.sh
+```
+Then run the test as follows:
+```
+./run.sh
+popd
 ```
