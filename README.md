@@ -63,19 +63,24 @@ rm -rf ~/tmp
 ```
 ## Delft3D
 ```
-mkdir -p ~/local/delft3d/fm-68819
+#mkdir -p ~/local/delft3d/fm-68819
+mkdir -p ~/local/delft3d/4-142586
 mkdir ~/tmp
 cd ~/tmp
-svn checkout --username <username> --password <password> https://svn.oss.deltares.nl/repos/delft3d/tags/delft3dfm/68819/ delft3dfm-68819
+#svn checkout --username <username> --password <password> https://svn.oss.deltares.nl/repos/delft3d/tags/delft3dfm/68819/ delft3dfm-68819
+svn checkout --username <username> --password <password> https://svn.oss.deltares.nl/repos/delft3d/tags/delft3d4/142586 delft3d4-142586
 ```
 #### Copy missing files: fix for known issue
 ```
-cp delft3dfm-68819/src/third_party_open/swan/src/*.[fF]* delft3dfm-68819/src/third_party_open/swan/swan_mpi
-cp delft3dfm-68819/src/third_party_open/swan/src/*.[fF]* delft3dfm-68819/src/third_party_open/swan/swan_omp
+#cp delft3dfm-68819/src/third_party_open/swan/src/*.[fF]* delft3dfm-68819/src/third_party_open/swan/swan_mpi
+#cp delft3dfm-68819/src/third_party_open/swan/src/*.[fF]* delft3dfm-68819/src/third_party_open/swan/swan_omp
+cp delft3d4-142586/src/third_party_open/swan/src/*.[fF]* delft3dfm-68819/src/third_party_open/swan/swan_mpi
+cp delft3d4-142586/src/third_party_open/swan/src/*.[fF]* delft3dfm-68819/src/third_party_open/swan/swan_omp
 ```
 #### Configure the build
 ```
-cd delft3dfm-68819/src
+#cd delft3dfm-68819/src
+cd delft3d4-142586/src
 export I_MPI_SHM="off"
 export FC=mpiifort
 export HDF5=${HOME}/local/hdf5/hdf5-1_10_7
@@ -84,7 +89,7 @@ export NDFF=${HOME}/local/netcdf/netcdf-f-4.5.0
 export INTL=/opt/intel/oneapi/compiler/2024.0/lib
 export LD_LIBRARY_PATH=${INTL}:${LD_LIBRARY_PATH}
 source /opt/intel/oneapi/setvars.sh
-./autogen.sh --verbose 2>&1 | tee a.txt
+./autogen.sh --verbose
 ./configure CC=mpiicx CXX=mpiicpx MPICXX=mpiicpx F77=mpiifort MPIF77=mpiifort FC=mpiifort MPIFC=mpiifort AM_FFLAGS='-lifcoremt -liomp5' FFLAGS="-qopenmp -L${INTL}" AM_FCFLAGS='-lifcoremt -liomp5' FCFLAGS="-qopenmp -L${INTL}" AM_LDFLAGS='-lifcoremt -liomp5' CPPFLAGS="-I${HDF5}/include -qopenmp -L${INTL} -diag-disable=10441" CFLAGS="-m64 -diag-disable=10441 -qopenmp -L${INTL}" NETCDF_CFLAGS="-I${NDFC}/include -I${NDFF}/include -qopenmp -L${INTL}" NETCDF_LIBS="-L${NDFC}/lib -L${NDFF}/lib -lnetcdf -qopenmp -L${INTL}" --prefix="${HOME}/local/delft3d/fm-68819"
 
 make ds-install
