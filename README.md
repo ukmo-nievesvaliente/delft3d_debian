@@ -98,7 +98,21 @@ make PETSC_DIR=/home/nievesg/tmp/petsc-3.20.5 PETSC_ARCH=arch-linux-c-debug all
 make PETSC_DIR=/home/nievesg/tmp/petsc-3.20.5 PETSC_ARCH=arch-linux-c-debug install
 ```
 #### METIS
-
+```
+mkdir -p /opt/metis/v5.1.0
+wget http://glaros.dtc.umn.edu/gkhome/fetch/sw/metis/metis-5.1.0.tar.gz
+tar -xvzf metis-5.1.0.tar.gz
+cd metis-5.1.0
+```
+As explained in `Install.txt` , you need to adapt `include/metis.h` to your needs:
+L33 -> `#define IDXTYPEWIDTH 64`
+L43 -> `#define REALTYPEWIDTH 64`
+After, as explained in `BUILD.txt`:
+```
+source /opt/intel/oneapi/setvars.sh --force
+make config prefix=/opt/metis/v5.1.0 cc=mpiicx
+make install
+```
 #### Clean up src of dependencies
 ```
 cd ~
