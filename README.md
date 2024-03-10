@@ -7,7 +7,7 @@ sudo apt -y update && sudo apt list --upgradable && sudo apt -y upgrade
 sudo apt install -y build-essential m4 ruby wget subversion pkg-config
 sudo apt install -y zlib1g zlib1g-dev curl libcurl4 libcurl4-openssl-dev
 sudo apt install -y uuid uuid-dev expat libexpat1-dev autoconf libtool bison flex
-sudo apt install -y patchelf petsc-dev libtiff-dev sqlite3 libsqlite3-dev libmetis-dev
+sudo apt install -y patchelf libtiff-dev sqlite3 libsqlite3-dev #petsc-dev libmetis-dev
 ```
 ### 2) Intel oneAPI
 ```
