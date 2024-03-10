@@ -1,5 +1,5 @@
 # How to install Delft3D in Debian 12
-#These notes describe how to install Delft3D on my workstation mounting Debian 12 - adapted from [here](https://gist.github.com/H0R5E/c4af6db788b227de702a12e01b64cf46).
+
 ## Pre-requisities
 ### 1) Dependencies from package manager
 ```
@@ -126,9 +126,12 @@ rm -rf ~/tmp
 svn checkout --username <username> --password <password> https://svn.oss.deltares.nl/repos/delft3d/tags/delft3d4/142586 /opt/delft3d4/v142586
 cd /opt/delft3d4/v142586
 ```
-#### Cloning this repository
+#### Cloning building code and using it
 ```
-git clone 
+git clone https://github.com/ukmo-nievesvaliente/delft3d_debian.git my_src
+mv build.sh build_ori.sh
+cp my_src/src/build.sh .
+ln -s ${PWD}/my_src/src/setenv_no_modules.sh ${PWD}/src/setenv_no_modules_nieves.sh
 ```
 
 #### Copy missing files: fix for known issue
@@ -136,37 +139,15 @@ git clone
 cp src/third_party_open/swan/src/*.[fF]* src/third_party_open/swan/swan_mpi
 cp src/third_party_open/swan/src/*.[fF]* src/third_party_open/swan/swan_omp
 ```
-#### Configure the build
+#### Bugfix for Debian 12
+Newer versions of linux do not have `sys/sysctl.h` anymore but they have `linux/sysctl.h` instead. Therefore, Line 3 of `src/utils_lgpl/deltares_common/packages/deltares_common_c/src/meminfo.cpp` needs to be changed accordingly.
+
+#### Build and install
 
 ```
-cd delft3d4-142586/
+./build.sh delft3d4
 ```
-Load the environment:
-```
-export I_MPI_SHM="off"
-export FC=mpiifort
-export HDF5=${HOME}/local/hdf5/hdf5-1_10_7
-export NCDF=${HOME}/local/netcdf/c4.6.1-f4.5.0
-export INTL=/opt/intel/oneapi/compiler/2023.2.3/linux/compiler/lib/intel64_lin
-export LD_LIBRARY_PATH=${INTL}:${LD_LIBRARY_PATH}
-source /opt/intel/oneapi/setvars.sh
-./autogen.sh --verbose
-```
-Newer version of linux do not have `sys/sysctl.h` anymore but they have `linux/sysctl.h` instead. Therefore, line 3 of `utils_lgpl/deltares_common/packages/deltares_common_c/src/meminfo.cpp` needs to be changed accordingly.
 
-
-Configure the build:
-```
-./configure CC=mpiicx CXX=mpiicpx MPICXX=mpiicpx F77=mpiifort MPIF77=mpiifort FC=mpiifort MPIFC=mpiifort AM_FFLAGS='-lifcoremt -liomp5' FFLAGS="-qopenmp -L${INTL}" AM_FCFLAGS='-lifcoremt -liomp5' FCFLAGS="-qopenmp -L${INTL}" AM_LDFLAGS='-lifcoremt -liomp5' CPPFLAGS="-I${HDF5}/include -qopenmp -L${INTL} -diag-disable=10441 -Wno-implicit-function-declaration -Wno-implicit-int" CFLAGS="-m64 -diag-disable=10441 -qopenmp -L${INTL} -Wno-implicit-function-declaration -Wno-implicit-int" NETCDF_CFLAGS="-I${NCDF}/include -qopenmp -L${INTL}" NETCDF_LIBS="-L${NCDF}/lib -lnetcdf -qopenmp -L${INTL}" --prefix="${HOME}/local/delft3d/s4-142586"
-```
-As explained [here](https://community.intel.com/t5/Intel-C-Compiler/Build-failure-with-with-newer-2022-2-compiler-in-pipeline/m-p/1419482), INTEL compilers are much stricter after version 2022.1 and some warnings are now treated as errors. Indeed, older compilations of Delft3D (see e.g., [here](https://oss.deltares.nl/documents/portlet_file_entry/183920/log_v67888_compilation.txt/d71cf5ba-8515-6604-165c-983f79e29fad?download=true)) used to give warning for `-Wimplicit-function-declaration` and `-Wimplicit-int` while now we have errors. In order to avoid this, the `-Wno-implicit-function-declaration` and `-Wno-implicit-int` compilation keys have been added in the configuration above. 
-
-#### Install
-```
-make ds-install
-#make ds-install -C engines_gpl/dflowfm
-cd ..
-```
 #### Test the build
 ```
 pushd examples/01_standard
