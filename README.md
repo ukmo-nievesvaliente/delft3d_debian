@@ -19,7 +19,7 @@ sudo apt install intel-hpckit=2022.2.0-191
 ```
 ### 2) Dependencies that needs to be compiled
 ```
-sudo mkdir /opt/{hdf5,netcdf,proj,gdal,petsc,metis}
+sudo mkdir /opt/{hdf5,netcdf,proj,gdal,petsc,metis,delft3d4}
 sudo chown nievesg:nievesg /opt/*
 mkdir -p ~/tmp
 cd ~/tmp
@@ -119,21 +119,25 @@ make install
 #### Clean up src of dependencies
 ```
 cd ~
-rm -rf ~/tmp/*
+rm -rf ~/tmp
 ```
 ## Delft3D
 ```
-mkdir -p /opt/delft3d/s4-142586
-cd ~/tmp
-svn checkout --username <username> --password <password> https://svn.oss.deltares.nl/repos/delft3d/tags/delft3d4/142586 delft3d4-142586
+svn checkout --username <username> --password <password> https://svn.oss.deltares.nl/repos/delft3d/tags/delft3d4/142586 /opt/delft3d4/v142586
+cd /opt/delft3d4/v142586
 ```
+#### Cloning this repository
+```
+git clone 
+```
+
 #### Copy missing files: fix for known issue
 ```
-cp delft3d4-142586/src/third_party_open/swan/src/*.[fF]* delft3d4-142586/src/third_party_open/swan/swan_mpi
-cp delft3d4-142586/src/third_party_open/swan/src/*.[fF]* delft3d4-142586/src/third_party_open/swan/swan_omp
+cp src/third_party_open/swan/src/*.[fF]* src/third_party_open/swan/swan_mpi
+cp src/third_party_open/swan/src/*.[fF]* src/third_party_open/swan/swan_omp
 ```
 #### Configure the build
-Go in the work directory:
+
 ```
 cd delft3d4-142586/
 ```
