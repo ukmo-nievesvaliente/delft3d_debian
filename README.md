@@ -105,8 +105,11 @@ tar -xvzf metis-5.1.0.tar.gz
 cd metis-5.1.0
 ```
 As explained in `Install.txt` , you need to adapt `include/metis.h` to your needs:
+
 L33 -> `#define IDXTYPEWIDTH 64`
+
 L43 -> `#define REALTYPEWIDTH 64`
+
 After, as explained in `BUILD.txt`:
 ```
 source /opt/intel/oneapi/setvars.sh --force
