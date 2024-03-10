@@ -9,7 +9,7 @@ sudo apt install -y zlib1g zlib1g-dev curl libcurl4 libcurl4-openssl-dev
 sudo apt install -y uuid uuid-dev expat libexpat1-dev autoconf libtool bison flex
 sudo apt install -y patchelf libtiff-dev sqlite3 libsqlite3-dev #petsc-dev libmetis-dev
 ```
-### 2) Intel oneAPI
+#### Intel oneAPI
 ```
 wget -O- https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB | gpg --dearmor | sudo tee /usr/share/keyrings/oneapi-archive-keyring.gpg > /dev/null
 echo "deb [signed-by=/usr/share/keyrings/oneapi-archive-keyring.gpg] https://apt.repos.intel.com/oneapi all main" | sudo tee /etc/apt/sources.list.d/oneAPI.list
@@ -17,7 +17,7 @@ sudo apt update
 sudo apt install intel-hpckit=2022.2.0-191
 #sudo apt install -y intel-hpckit
 ```
-### 3) Dependencies that needs to be compiled
+### 2) Dependencies that needs to be compiled
 ```
 sudo mkdir /opt/{hdf5,netcdf,proj,gdal,petsc,metis}
 sudo chown nievesg:nievesg /opt/*
