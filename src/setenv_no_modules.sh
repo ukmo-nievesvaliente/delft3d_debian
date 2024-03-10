@@ -34,6 +34,12 @@ export F77=mpiifort
 export MPIF77=mpiifort 
 export FC=mpiifort 
 export MPIFC=mpiifort 
+# As explained in https://community.intel.com/t5/Intel-C-Compiler/Build-failure-with-with-newer-2022-2-compiler-in-pipeline/m-p/1419482), 
+# INTEL compilers are much stricter after version 2022.1 and some warnings are now treated as errors. Indeed, older compilations of Delft3D 
+# (https://oss.deltares.nl/documents/portlet_file_entry/183920/log_v67888_compilation.txt/d71cf5ba-8515-6604-165c-983f79e29fad?download=true) 
+# used to give warning for '-Wimplicit-function-declaration' and '-Wimplicit-int' while now we have errors. 
+# In order to avoid this, the '-Wno-implicit-function-declaration', '-Wno-implicit-int' and '-Wno-c++11-narrowing' compilation keys have been 
+# added in the configuration above.
 export CXXFLAGS="-Wno-implicit-function-declaration -Wno-implicit-int -Wno-c++11-narrowing -diag-disable=10441"
 export CFLAGS="-m64 -Wno-implicit-function-declaration -Wno-implicit-int -Wno-c++11-narrowing -diag-disable=10441"
 
